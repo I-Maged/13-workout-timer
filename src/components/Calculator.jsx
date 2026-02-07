@@ -2,7 +2,6 @@ import { memo, useEffect, useState } from 'react'
 import clickSound from './ClickSound.m4a'
 
 const Calculator = ({ workouts, allowSound }) => {
-  // allowSound
   const [number, setNumber] = useState(workouts.at(0).numExercises)
   const [sets, setSets] = useState(3)
   const [speed, setSpeed] = useState(90)
@@ -10,28 +9,27 @@ const Calculator = ({ workouts, allowSound }) => {
 
   const [duration, setDuration] = useState(0)
 
-  //   const duration = (number * sets * speed) / 60 + (sets - 1) * durationBreak
-
   useEffect(() => {
     setDuration((number * sets * speed) / 60 + (sets - 1) * durationBreak)
   }, [durationBreak, number, sets, speed])
 
+  useEffect(() => {
+    const playSound = function () {
+      if (!allowSound) return
+      const sound = new Audio(clickSound)
+      sound.play()
+    }
+    playSound()
+  }, [duration, allowSound])
+
   const mins = Math.floor(duration)
   const seconds = (duration - mins) * 60
 
-  const playSound = function () {
-    if (!allowSound) return
-    const sound = new Audio(clickSound)
-    sound.play()
-  }
-
   const handleInc = () => {
-    playSound()
     setDuration((duration) => Math.floor(duration) + 1)
   }
 
   const handleDec = () => {
-    playSound()
     setDuration((duration) => (duration > 1 ? Math.ceil(duration) - 1 : 0))
   }
 
